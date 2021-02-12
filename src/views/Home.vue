@@ -6,13 +6,27 @@
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import { mapState, mapGetters, mapActions } from 'vuex'
+import { convertImageToBase64 } from '@/helpers/convertImageToBase64'
 
 export default {
   name: 'Home',
   components: {
     HelloWorld
+  },
+  computed: {
+    ...mapState('objectDetection', {
+      isObjectDetecting: state => state.detectedObject.isLoading,
+      detectedObjectData: state => state.detectedObject.data
+    }),
+    ...mapGetters('objectDetection', {
+      isDetectObjectError: 'isDetectObjectError'
+    })
+  },
+  methods: {
+    ...mapActions('objectDetection', {
+      detectObjectFromImage: 'detectObjectFromImage'
+    }),
   }
 }
 </script>
