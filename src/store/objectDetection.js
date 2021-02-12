@@ -47,7 +47,7 @@ const mutations = {
 			...state.detectedObject,
 			isLoading: false,
 			isSuccess: false,
-			errorMessage: error.messagge
+			errorMessage: error.message
 		}
 	},
 }
