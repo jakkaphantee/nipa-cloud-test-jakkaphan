@@ -26,6 +26,7 @@ export default {
   components: {
     VideoCamera
   },
+  data() {
     return {
       imageSource: ''
     }
@@ -39,20 +40,42 @@ export default {
       isDetectObjectError: 'isDetectObjectError'
     })
   },
+  watch: {
+    isObjectDetecting(newValue) {
+      if (!newValue) {
+        if (!this.isDetectObjectError) {
+          this.detectedObjects = this.detectedObjectData.detected_objects
+          this.imageSource = 'data:image/*;base64,' + this.detectedObjectData.raw_data
+        } else {
+          // error
+        }
+      }
+    }
+  },
   methods: {
     ...mapActions('objectDetection', {
       detectObjectFromImage: 'detectObjectFromImage'
     }),
-    async onImageSelected(event) {
-      const files = event.target?.files || []
-      if (files.length > 0) {
-        const base64ImageFile = await convertImageToBase64({ imageFile: files[0] })
-        this.imageSource = base64ImageFile
-        this.detectObjectFromImage({ base64ImageFile })
-      } else {
-        // error no image
-      }
+    setLoadingImage(base64ImageFile) {
+      this.imageSource = base64ImageFile
+      this.detectObjectFromImage({ base64ImageFile })
     }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.on-image-loading {
+  filter: blur(8px);
+  -webkit-filter: blur(8px);
+}
+
+.loading-container {
+  position: absolute;
+  left: 50%;
+  right: 50%;
+  top: 50%;
+  bottom: 50%;
+  z-index: 9999;
+}
+</style>
