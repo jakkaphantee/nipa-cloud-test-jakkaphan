@@ -34,7 +34,8 @@ export default {
   computed: {
     ...mapState('objectDetection', {
       isObjectDetecting: state => state.detectedObject.isLoading,
-      detectedObjectData: state => state.detectedObject.data
+      detectedObjectData: state => state.detectedObject.data,
+      errorMessage: state => state.detectedObject.errorMessage
     }),
     ...mapGetters('objectDetection', {
       isDetectObjectError: 'isDetectObjectError'
@@ -47,7 +48,7 @@ export default {
           this.detectedObjects = this.detectedObjectData.detected_objects
           this.imageSource = 'data:image/*;base64,' + this.detectedObjectData.raw_data
         } else {
-          // error
+          alert(this.errorMessage)
         }
       }
     }
