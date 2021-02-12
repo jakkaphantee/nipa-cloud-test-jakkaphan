@@ -1,21 +1,16 @@
 <template>
-  <b-container>
-    <input
-      ref="imageSelector"
-      type="file"
-      accept="image/jpg, image/png, image/jpeg"
-      hidden
-      @change="onImageSelected($event)"
+  <b-container class="pt-4 pb-4">
+    <VideoCamera @setLoadingImage="setLoadingImage" />
+    <div
+      v-if="imageSource !== ''"
+      class="base-card shadow mt-4"
     >
-    <b-button
-      size="sm"
-      @click="$refs.imageSelector.click()"
-    >
-      Select Image
-    </b-button>
-    <div>
+      <div v-if="isObjectDetecting" class="loading-container">
+        <b-spinner class="float-center" variant="light" type="grow" />
+      </div>
       <img
-        width="500px"
+        :class="isObjectDetecting ? 'on-image-loading' : ''"
+        width="800px"
         :src="imageSource"
       />
     </div>
@@ -24,11 +19,13 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
-import { convertImageToBase64 } from '@/helpers/convertImageToBase64'
+import VideoCamera from '@/components/VideoCamera'
 
 export default {
   name: 'Home',
-  data () {
+  components: {
+    VideoCamera
+  },
     return {
       imageSource: ''
     }
