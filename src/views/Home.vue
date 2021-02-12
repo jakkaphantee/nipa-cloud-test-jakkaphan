@@ -1,8 +1,25 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <b-container>
+    <input
+      ref="imageSelector"
+      type="file"
+      accept="image/jpg, image/png, image/jpeg"
+      hidden
+      @change="onImageSelected($event)"
+    >
+    <b-button
+      size="sm"
+      @click="$refs.imageSelector.click()"
+    >
+      Select Image
+    </b-button>
+    <div>
+      <img
+        width="500px"
+        :src="imageSource"
+      />
+    </div>
+  </b-container>
 </template>
 
 <script>
@@ -11,8 +28,10 @@ import { convertImageToBase64 } from '@/helpers/convertImageToBase64'
 
 export default {
   name: 'Home',
-  components: {
-    HelloWorld
+  data () {
+    return {
+      imageSource: ''
+    }
   },
   computed: {
     ...mapState('objectDetection', {
@@ -27,6 +46,16 @@ export default {
     ...mapActions('objectDetection', {
       detectObjectFromImage: 'detectObjectFromImage'
     }),
+    async onImageSelected(event) {
+      const files = event.target?.files || []
+      if (files.length > 0) {
+        const base64ImageFile = await convertImageToBase64({ imageFile: files[0] })
+        this.imageSource = base64ImageFile
+        this.detectObjectFromImage({ base64ImageFile })
+      } else {
+        // error no image
+      }
+    }
   }
 }
 </script>
